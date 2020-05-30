@@ -27,9 +27,9 @@ def auth_token_required(roles=[]):
                 if len(roles) == 0 or len(matched_roles) > 0:
                     return f(decoded_token, *args, **kwargs)
                 else:
-                    raise Forbidden('Usuário não autorizado')
+                    raise Forbidden
             else:
-                raise InvalidToken('Usuário não autorizado')
+                raise InvalidToken
 
         return decorated_function
     return decorator
