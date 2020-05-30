@@ -1,5 +1,6 @@
 from flask import request
 from functools import wraps
+from .exceptions import InvalidToken
 
 def validate_schema(schema):
     def decorator(f):
