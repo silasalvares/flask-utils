@@ -6,4 +6,5 @@ setup(
     author="Silas Carvalho",
     author_email="contato@silascarvalho.dev",
     packages=find_packages(),
-    install_requires=['flask']    
+    install_requires=['flask']   
+) 
