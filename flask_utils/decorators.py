@@ -1,6 +1,6 @@
-from flask import request
+from flask import request, g
 from functools import wraps
-from .exceptions import InvalidToken
+from werkzeug.exceptions import Forbidden
 
 def validate_schema(schema):
     def decorator(f):
@@ -15,22 +15,18 @@ def validate_schema(schema):
         return decorated_function
     return decorator
 
-def auth_token_required(roles=[]):
+def auth_token_required(token_header='Authorization', ):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            auth_token = request.headers.get('Authentication-Token', None)
-            
-            if auth_token is not None:
-                decoded_token = jwt_handler.decode_token(auth_token)
-                user_roles = decoded_token.get('roles', [])
-                matched_roles = [r for r in roles if r in user_roles]
-                if len(roles) == 0 or len(matched_roles) > 0:
-                    return f(decoded_token, *args, **kwargs)
-                else:
-                    raise Forbidden
-            else:
-                raise InvalidToken
+            validator = g.get('validator', lambda token: False)
+            token = request.headers.get(token_header, None)
+            playload = validator(token=token)
+            if not playload:
+                raise Forbidden
+        
+            kwargs['auth_data'] = playload
+            return f(*args, **kwargs)
 
         return decorated_function
     return decorator
