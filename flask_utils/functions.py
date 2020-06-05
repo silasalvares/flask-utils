@@ -8,7 +8,7 @@ def make_json_webapi(app_name, **kwargs):
         if not str(error):
             error = 'Internal Server Error' 
         error += ' ' + str(type(ex))
-        return jsonify({'error': error})
+        return make_default_response(success=False, errors=[error])
 
     flask_app = Flask(app_name)
     for exception in default_exceptions.items():
@@ -23,3 +23,11 @@ def make_json_webapi(app_name, **kwargs):
         return response
 
     return flask_app
+
+def make_default_response(success=True, data={}, messages=[], errors=[]):
+    return {
+        'success': success,
+        'data': data,
+        'messages': messages,
+        'errors': errors
+    }
