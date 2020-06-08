@@ -14,7 +14,7 @@ def make_json_webapi(app_name, **kwargs):
     for exception in default_exceptions.items():
         flask_app.register_error_handler(exception[0], make_json_error)
     
-    flask_app.register_error_handler(Exception, make_json_error)
+    flask_app.register_error_handler(Exception, make_json_error), ex.code
 
     @flask_app.after_request
     def set_content_type(response):
